@@ -13,6 +13,7 @@ import { ArrowRight, Clock, MapPin, Utensils, Bed, ChevronDown } from 'lucide-re
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Badge } from '@/components/ui/Badge';
 import { Divider } from '@/components/ui/Divider';
+import { SaveTripButton } from '@/components/ui/SaveTripButton';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { formatPrice, formatDuration } from '@/utils/format';
 import { cn } from '@/utils/cn';
@@ -267,18 +268,23 @@ function ItineraryPanel({ itinerary, index }: ItineraryPanelProps) {
             </p>
             <p className="text-2xs text-obsidian-500 mt-0.5">per person · all-inclusive</p>
           </div>
-          <Link
-            href={`/itineraries/${itinerary.slug}`}
-            className={cn(
-              'inline-flex items-center gap-2 text-xs uppercase tracking-widest',
-              'px-6 py-3 border border-gold-500 text-gold-400',
-              'hover:bg-gold-500 hover:text-obsidian-950 transition-all duration-300 group',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500',
-            )}
-          >
-            Full Itinerary
-            <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
+
+          {/* CTA row — SaveTripButton shows full store + hook integration */}
+          <div className="flex items-center gap-3">
+            <SaveTripButton itinerary={itinerary} variant="outline" />
+            <Link
+              href={`/itineraries/${itinerary.slug}`}
+              className={cn(
+                'inline-flex items-center gap-2 text-xs uppercase tracking-widest',
+                'px-6 py-3 border border-gold-500 text-gold-400',
+                'hover:bg-gold-500 hover:text-obsidian-950 transition-all duration-300 group',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500',
+              )}
+            >
+              Full Itinerary
+              <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
       </div>
     </div>
