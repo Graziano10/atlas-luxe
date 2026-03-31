@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
   },
   poweredByHeader: false,
   compress: true,
+  // Security headers for static assets not matched by middleware
+  // (/_next/static, images, fonts, etc.). The full per-request CSP with
+  // nonce is set dynamically in middleware.ts.
   headers: async () => [
     {
       source: '/(.*)',
@@ -30,18 +33,6 @@ const nextConfig: NextConfig = {
         {
           key: 'Strict-Transport-Security',
           value: 'max-age=63072000; includeSubDomains; preload',
-        },
-        {
-          key: 'Content-Security-Policy',
-          value: [
-            "default-src 'self'",
-            "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-            "style-src 'self' 'unsafe-inline'",
-            "img-src 'self' data: blob: https://images.unsplash.com",
-            "font-src 'self'",
-            "connect-src 'self'",
-            "frame-ancestors 'none'",
-          ].join('; '),
         },
       ],
     },

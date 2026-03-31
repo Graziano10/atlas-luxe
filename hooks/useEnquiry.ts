@@ -7,6 +7,9 @@
  * Components hold zero form logic — they only render values and call the
  * returned setters / submit handler.
  *
+ * Validation is delegated to lib/validation.ts (shared with the API layer)
+ * so there is a single source of truth for rules and error messages.
+ *
  * @example
  *   const { values, errors, isLoading, isSuccess, setValue, submit } = useEnquiry();
  *
@@ -14,30 +17,19 @@
  *   const enquiry = useEnquiry({ itineraryId: itinerary.id });
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { api } from '@/lib/api';
+import { validateEnquiry } from '@/lib/validation';
 import type {
   EnquiryPayload,
   EnquiryResponse,
   AsyncState,
 } from '@/types';
 
-// ─── Validation ────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-type EnquiryField  = keyof EnquiryPayload;
-type FieldErrors   = Partial<Record<EnquiryField, string>>;
-
-function validate(values: Partial<EnquiryPayload>): FieldErrors {
-  const errors: FieldErrors = {};
-
-  if (!values.firstName?.trim())        errors.firstName = 'First name is required.';
-  if (!values.lastName?.trim())         errors.lastName  = 'Last name is required.';
-  if (!values.email?.includes('@'))     errors.email     = 'A valid email address is required.';
-  if (!values.message?.trim())          errors.message   = 'Please describe your ideal journey.';
-  if ((values.groupSize ?? 0) < 1)      errors.groupSize = 'Group size must be at least 1.';
-
-  return errors;
-}
+type EnquiryField = keyof EnquiryPayload;
+type FieldErrors  = Partial<Record<EnquiryField, string>>;
 
 // ─── Hook return type ─────────────────────────────────────────────────────────
 
@@ -53,7 +45,7 @@ interface UseEnquiryReturn {
   setValue:   (field: EnquiryField, value: string | number) => void;
   /** Validate and submit via the API. No-op if already loading. */
   submit:     () => Promise<void>;
-  /** Reset form to initial state. */
+  /** Reset form to the original defaults. */
   reset:      () => void;
 }
 
@@ -62,7 +54,12 @@ interface UseEnquiryReturn {
 export function useEnquiry(
   defaults: Partial<EnquiryPayload> = {},
 ): UseEnquiryReturn {
-  const [values, setValues] = useState<Partial<EnquiryPayload>>(defaults);
+  // Capture defaults at mount time via ref so `reset` stays stable even when
+  // the caller passes an inline object literal (which would otherwise change
+  // identity on every parent render and invalidate the reset callback).
+  const defaultsRef = useRef(defaults);
+
+  const [values, setValues] = useState<Partial<EnquiryPayload>>(defaultsRef.current);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [state,  setState]  = useState<AsyncState<EnquiryResponse>>({
     data:   null,
@@ -88,8 +85,8 @@ export function useEnquiry(
   const submit = useCallback(async () => {
     if (state.status === 'loading') return;
 
-    // Client-side validation pass
-    const fieldErrors = validate(values);
+    // Client-side validation via shared lib/validation.ts
+    const fieldErrors = validateEnquiry(values);
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
       return;
@@ -107,11 +104,12 @@ export function useEnquiry(
   }, [values, state.status]);
 
   // ── reset ───────────────────────────────────────────────────────────────────
+  // Uses the captured ref so this callback is stable regardless of re-renders.
   const reset = useCallback(() => {
-    setValues(defaults);
+    setValues(defaultsRef.current);
     setErrors({});
     setState({ data: null, status: 'idle', error: null });
-  }, [defaults]);
+  }, []);
 
   return {
     values,

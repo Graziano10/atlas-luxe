@@ -25,6 +25,13 @@ import {
   getFeaturedItineraries,
 } from '@/lib/data';
 
+import {
+  validateEnquiry as sharedValidateEnquiry,
+  validateNewsletter,
+  sanitizeEnquiry,
+  isValidEmail,
+} from '@/lib/validation';
+
 import type {
   Destination,
   Itinerary,
@@ -124,32 +131,25 @@ async function listFeaturedItineraries(): Promise<ApiResult<readonly Itinerary[]
 
 // ─── Enquiry ───────────────────────────────────────────────────────────────────
 
-/** Validates an enquiry payload and returns structured field errors. */
-function validateEnquiry(payload: EnquiryPayload): string | null {
-  if (!payload.firstName.trim()) return 'First name is required.';
-  if (!payload.lastName.trim())  return 'Last name is required.';
-  if (!payload.email.includes('@')) return 'A valid email address is required.';
-  if (!payload.message.trim())   return 'Please describe your ideal journey.';
-  if (payload.groupSize != null && payload.groupSize < 1) {
-    return 'Group size must be at least 1.';
-  }
-  return null;
-}
-
 async function submitEnquiry(
   payload: EnquiryPayload,
 ): Promise<ApiResult<EnquiryResponse>> {
   await simulateDelay(300, 800);
 
-  const validationError = validateEnquiry(payload);
-  if (validationError) {
-    return fail('VALIDATION_ERROR', validationError, 422);
+  // Server-side validation via shared lib/validation.ts
+  const fieldErrors = sharedValidateEnquiry(payload);
+  if (Object.keys(fieldErrors).length > 0) {
+    const firstMessage = Object.values(fieldErrors)[0] as string;
+    return fail('VALIDATION_ERROR', firstMessage, 422);
   }
+
+  // Sanitize before any further processing / forwarding to external services
+  const clean = sanitizeEnquiry(payload);
 
   const response: EnquiryResponse = {
     id:                     `enq-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     status:                 'received',
-    message:                `Thank you, ${payload.firstName}. Your enquiry has been received. A dedicated travel curator will be in touch within 24 hours.`,
+    message:                `Thank you, ${clean.firstName}. Your enquiry has been received. A dedicated travel curator will be in touch within 24 hours.`,
     estimatedResponseHours: 24,
   };
 
@@ -163,8 +163,16 @@ async function subscribeNewsletter(
 ): Promise<ApiResult<NewsletterResponse>> {
   await simulateDelay(200, 500);
 
-  if (!payload.email.trim() || !payload.email.includes('@')) {
-    return fail('VALIDATION_ERROR', 'A valid email address is required.', 422);
+  // Server-side validation via shared lib/validation.ts
+  const fieldErrors = validateNewsletter(payload);
+  if (Object.keys(fieldErrors).length > 0) {
+    return fail('VALIDATION_ERROR', fieldErrors.email ?? 'Invalid request.', 422);
+  }
+
+  // Normalise email before storage / forwarding
+  const email = payload.email.trim().toLowerCase();
+  if (!isValidEmail(email)) {
+    return fail('VALIDATION_ERROR', 'Please enter a valid email address.', 422);
   }
 
   return ok({
