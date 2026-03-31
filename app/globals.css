@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Custom properties ──────────────────────────────────────────────────────── */
+:root {
+  --color-gold:     212 168 39;
+  --color-obsidian: 10 10 15;
+  --color-ivory:    253 253 248;
+
+  /* Scrollbar */
+  scrollbar-color: rgb(var(--color-gold) / 0.3) rgb(var(--color-obsidian));
+  scrollbar-width: thin;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────────── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing:  antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-obsidian-950 text-ivory-100 font-sans;
+    min-height: 100dvh;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: rgb(var(--color-gold) / 0.25);
+    color: rgb(var(--color-ivory));
+  }
+
+  /* Custom scrollbar (WebKit) */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgb(var(--color-obsidian));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-gold) / 0.3);
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--color-gold) / 0.5);
+  }
+
+  /* Focus visible */
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-gold));
+    outline-offset: 3px;
+  }
+
+  /* Remove focus for mouse users */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Headings default */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-light;
+  }
+
+  /* Images */
+  img, video {
+    @apply block max-w-full;
+  }
+}
+
+/* ─── Components ─────────────────────────────────────────────────────────────── */
+@layer components {
+  /* Container */
+  .container {
+    @apply max-w-7xl mx-auto;
+  }
+
+  /* Gold shimmer text */
+  .text-shimmer {
+    background: linear-gradient(
+      90deg,
+      theme('colors.gold.600') 0%,
+      theme('colors.gold.300') 40%,
+      theme('colors.gold.100') 50%,
+      theme('colors.gold.300') 60%,
+      theme('colors.gold.600') 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+
+  /* Luxury glass panel */
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
+  /* Ornamental divider */
+  .ornament-line {
+    @apply h-px bg-gradient-to-r from-transparent via-gold-500/40 to-transparent;
+  }
+
+  /* Section padding */
+  .section-pad {
+    @apply py-24 lg:py-32;
+  }
+}
+
+/* ─── Utilities ──────────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Prevent layout shift for images */
+  .aspect-golden {
+    aspect-ratio: 1.618 / 1;
+  }
+
+  /* Hide scrollbar but keep scrollable */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
