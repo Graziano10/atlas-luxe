@@ -85,7 +85,7 @@ const itineraries: readonly Itinerary[] = [
     id:        'amalfi-5-private',
     slug:      'amalfi-private-estate-5-nights',
     title:     'Five Nights on the Amalfi Coast',
-    subtitle:  'Italy's most glamorous coastline, privately',
+    subtitle:  "Italy's most glamorous coastline, privately",
     destination: {
       id:      'amalfi-private-villa',
       name:    'Amalfi Private Estate',
@@ -104,7 +104,41 @@ const itineraries: readonly Itinerary[] = [
     },
     overview:
       'A six-day immersion into the Amalfi Coast from a private clifftop estate. Private yacht, Michelin-starred dinners, truffle hunting in Cilento and exclusive museum access after hours.',
-    days: [],
+    days: [
+      {
+        day:         1,
+        title:       'Arrival at Villa Tramonto',
+        description: 'Helicopter transfer from Naples to the clifftop estate. Private chef welcome dinner on the panoramic terrace with Champagne and Campania wines.',
+        activities:  [
+          { id: 'b1', name: 'Helicopter Transfer', duration: '20 min', description: 'Private helicopter from Naples International', type: 'Transfer' },
+          { id: 'b2', name: 'Estate Orientation', duration: '1 hr', description: 'Personal introduction to your villa, chef and concierge', type: 'Cultural' },
+        ],
+        meals:         ['Welcome Dinner'],
+        accommodation: 'Villa Tramonto, Ravello',
+      },
+      {
+        day:         2,
+        title:       'Private Yacht & Hidden Coves',
+        description: 'Full-day aboard a 52-ft private yacht. Visit Positano by sea, anchor in secret coves, freshly caught lunch prepared on deck by your chef.',
+        activities:  [
+          { id: 'b3', name: 'Private Yacht Day', duration: 'Full day', description: 'Amalfi coastline by private 52ft sailing yacht', type: 'Water' },
+          { id: 'b4', name: 'Positano Landing', duration: '2 hrs', description: 'Private guided walk through Positano\'s alleys', type: 'Cultural' },
+        ],
+        meals:         ['Breakfast', 'Lunch', 'Dinner'],
+        accommodation: 'Villa Tramonto, Ravello',
+      },
+      {
+        day:         3,
+        title:       'Truffle Hunting in Cilento',
+        description: 'Into the Cilento hills with a fifth-generation truffle hunter and his hounds. Return for a private lunch with your harvest, paired with aged Taurasi.',
+        activities:  [
+          { id: 'b5', name: 'Truffle Hunt', duration: '3 hrs', description: 'Foraging session with a local truffle master', type: 'Culinary' },
+          { id: 'b6', name: 'Harvest Lunch', duration: '2 hrs', description: 'Five-course truffle menu crafted from your morning haul', type: 'Culinary' },
+        ],
+        meals:         ['Breakfast', 'Lunch'],
+        accommodation: 'Villa Tramonto, Ravello',
+      },
+    ],
     inclusions: [
       'Private estate (6 nights)',
       'All meals with private chef',
@@ -157,7 +191,41 @@ const itineraries: readonly Itinerary[] = [
     },
     overview:
       'A week of cultural immersion in a private machiya townhouse: private tea ceremonies, dawn walks in locked temple gardens, nightly kaiseki rituals and a geisha cultural evening.',
-    days: [],
+    days: [
+      {
+        day:         1,
+        title:       'Gion Arrival & Evening Lanterns',
+        description: 'Private transfer from Kyoto Station to your machiya. Evening stroll through Gion Hanamikoji — your guide unlocks insight most tourists never receive.',
+        activities:  [
+          { id: 'c1', name: 'Machiya Welcome Tea', duration: '45 min', description: 'Informal tea ceremony in your private garden', type: 'Wellness' },
+          { id: 'c2', name: 'Gion Evening Walk', duration: '2 hrs', description: 'Private guided walk through the lantern-lit geisha district', type: 'Cultural' },
+        ],
+        meals:         ['Welcome Dinner'],
+        accommodation: 'Gion Machiya Estate',
+      },
+      {
+        day:         2,
+        title:       'Dawn Temple Access',
+        description: 'Locked gates open at 5:30 AM for your group alone at Fushimi Inari. Walk the full path in silence before the world arrives. Private tea at a 400-year-old teahouse after.',
+        activities:  [
+          { id: 'c3', name: 'Fushimi Inari Dawn', duration: '2.5 hrs', description: 'Exclusive pre-opening access to the full torii path', type: 'Cultural' },
+          { id: 'c4', name: 'Historic Teahouse', duration: '1 hr', description: 'Private tea at a teahouse dating to the Edo period', type: 'Culinary' },
+        ],
+        meals:         ['Breakfast', 'Lunch', 'Dinner'],
+        accommodation: 'Gion Machiya Estate',
+      },
+      {
+        day:         3,
+        title:       'Tea Ceremony & Nishiki Market',
+        description: 'A full morning with a certified tea master in a private garden tearoom. Afternoon private tour of Nishiki Market with a Kyoto culinary historian.',
+        activities:  [
+          { id: 'c5', name: 'Tea Ceremony Master Class', duration: '3 hrs', description: 'Ura-Senke school private session with grand tea master', type: 'Cultural' },
+          { id: 'c6', name: 'Nishiki Market Tour', duration: '2 hrs', description: 'Exclusive tasting tour with a food historian', type: 'Culinary' },
+        ],
+        meals:         ['Breakfast', 'Lunch', 'Dinner'],
+        accommodation: 'Gion Machiya Estate',
+      },
+    ],
     inclusions: [
       'Machiya estate (6 nights)',
       'All kaiseki meals',

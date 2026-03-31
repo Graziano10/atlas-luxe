@@ -1,16 +1,20 @@
 import type { Metadata } from 'next';
-import { HeroSection }            from '@/components/sections/HeroSection';
-import { PhilosophySection }      from '@/components/sections/PhilosophySection';
-import { StatsSection }           from '@/components/sections/StatsSection';
-import { FeaturedDestinations }   from '@/components/sections/FeaturedDestinations';
-import { FeaturedItineraries }    from '@/components/sections/FeaturedItineraries';
-import { TestimonialsSection }    from '@/components/sections/TestimonialsSection';
-import { NewsletterSection }      from '@/components/sections/NewsletterSection';
+
+// ─── Section components ───────────────────────────────────────────────────────
+import { HeroSection }         from '@/components/sections/HeroSection';
+import { StorytellingSection } from '@/components/sections/StorytellingSection';
+import { FeaturedDestinations } from '@/components/sections/FeaturedDestinations';
+import { ItineraryTimeline }   from '@/components/sections/ItineraryTimeline';
+import { TestimonialsSection } from '@/components/sections/TestimonialsSection';
+import { FinalCTA }            from '@/components/sections/FinalCTA';
+import { NewsletterSection }   from '@/components/sections/NewsletterSection';
+
+// ─── Data access (server layer) ───────────────────────────────────────────────
 import { getFeaturedDestinations } from '@/lib/destinations';
 import { getFeaturedItineraries }  from '@/lib/itineraries';
 import { getFeaturedTestimonials } from '@/lib/testimonials';
 
-// ─── Page metadata ────────────────────────────────────────────────────────────
+// ─── Metadata ─────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = {
   title: 'Bespoke Luxury Travel — Handcrafted Journeys for the Discerning',
@@ -19,35 +23,47 @@ export const metadata: Metadata = {
 };
 
 // ─── Page (Server Component) ──────────────────────────────────────────────────
-// Data is fetched at the server layer — no waterfalls, no client-side loading states.
+// All data fetched at the server layer — no waterfalls, no client loading states.
 
 export default function HomePage() {
-  // Data access — centralised in /lib (pure functions, easily swapped for CMS/API)
-  const destinations  = getFeaturedDestinations();
-  const itineraries   = getFeaturedItineraries();
-  const testimonials  = getFeaturedTestimonials(5);
+  const destinations = getFeaturedDestinations();
+  const itineraries  = getFeaturedItineraries();
+  const testimonials = getFeaturedTestimonials(5);
 
   return (
     <>
-      {/* 1. Hero — immersive full-viewport cinematic introduction */}
+      {/*
+        Page composition
+        ────────────────────────────────────────────────────
+        1. Hero            Fullscreen cinematic slideshow
+        2. Storytelling    Scroll-parallax brand narrative
+        3. Destinations    Asymmetric mosaic card grid
+        4. Timeline        Day-by-day itinerary preview
+        5. Testimonials    Social proof
+        6. Final CTA       Conversion — enquire / membership
+        7. Newsletter      Inner-circle capture
+        ────────────────────────────────────────────────────
+      */}
+
+      {/* 1 ── Immersive full-viewport hero with auto-advancing slides */}
       <HeroSection />
 
-      {/* 2. Philosophy — brand values anchor */}
-      <PhilosophySection />
+      {/* 2 ── Brand storytelling: philosophy, curation, access */}
+      <StorytellingSection />
 
-      {/* 3. Stats — credibility signals */}
-      <StatsSection />
-
-      {/* 4. Featured Destinations — visual discovery */}
+      {/* 3 ── Featured destinations mosaic grid */}
       <FeaturedDestinations destinations={destinations} />
 
-      {/* 5. Featured Itineraries — product showcase */}
-      <FeaturedItineraries itineraries={itineraries} />
+      {/* 4 ── Itinerary day-by-day timeline preview */}
+      <ItineraryTimeline itineraries={itineraries} />
 
-      {/* 6. Testimonials — social proof */}
+      {/* 5 ── Testimonials — social proof from past clients */}
       <TestimonialsSection testimonials={testimonials} />
 
-      {/* 7. Newsletter — inner circle conversion */}
+      {/* 6 ── Final conversion CTA with parallax background */}
+      <FinalCTA />
+
+      {/* 7 ── Newsletter / inner circle sign-up */}
       <NewsletterSection />
     </>
   );

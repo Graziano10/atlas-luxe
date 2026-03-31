@@ -1,6 +1,7 @@
 import { cn } from '@/utils/cn';
 
 interface SectionHeaderProps {
+  id?:        string;
   eyebrow?:   string;
   title:      string;
   subtitle?:  string;
@@ -10,6 +11,7 @@ interface SectionHeaderProps {
 }
 
 export function SectionHeader({
+  id,
   eyebrow,
   title,
   subtitle,
@@ -29,6 +31,7 @@ export function SectionHeader({
         <p className="text-2xs uppercase tracking-ultra text-gold-500 font-medium">{eyebrow}</p>
       )}
       <h2
+        id={id}
         className={cn(
           'font-display font-light leading-tight',
           'text-4xl md:text-5xl lg:text-6xl',
